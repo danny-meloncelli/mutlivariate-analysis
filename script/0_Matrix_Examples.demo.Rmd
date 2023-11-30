@@ -1,0 +1,50 @@
+---
+title: "ZZSC5855 --- Matrices"
+author:
+- "Pavel Krivitsky"
+- "based on notes by Spiridon Penev"
+- "Deparment of Statistics"
+- "The University of New South Wales"
+output:
+  html_notebook: default
+  pdf_document: default
+---
+
+
+# Constructing matrices in R #
+R provides a number of tools for constructing and manipulating matrices. The following is a quick overview, particularly where they are distinguished from data frames:
+
+* `diag(n)` (`n` scalar integer) is a `n`×`n` Identity matrix. Note that the function behaves differently depending on whether `n` has length 1 or not.
+* `diag(x)` (`x` a vector of length `n`) is a `n`×`n` diagonal matrix whose diagonal elements come from vector `x`; can lead to unpredictable behaviour when the length of `x` is not known in advance and could potentially be 1.
+* `diag(x, n)` is a `n`×`n` diagonal matrix whose column elements come from vector `x`; works consistently unlike the previous case.
+* `matrix(1,n,n)` is a `n`×`n` matrix of ones
+* `matrix(1,n,p)` is a `n`×`p` matrix of ones
+* `matrix(x,n,p)` (`x` a scalar or a vector) is a `n`×`p` filled with values of `x` *by columns* with `x` recycled as needed to length `n*p`
+* `matrix(1,n)` is an `n`×`1` column vector of ones
+* `matrix(1,ncol=n)` is an 1×n row vector of ones
+* `cbind(x1,x2,x3)` bind dimensionless or column vectors or matrices `x1`, `x2`, and `x3` into a matrix as columns
+* `rbind(x1,x2,x3)` bind dimensionless or row vectors or matrices `x1`, `x2`, and `x3` into a matrix as rows
+
+# Matrix arithmetic and operations #
+
+* Arithmetic operations `+`, `-`, `*`, `/`, etc. perform operations elementwise, as do many functions such as `exp()` and `sin()`.
+* Matrix product is `%*%`: not `*`!
+
+# Matrix functions #
+
+* `dim(X)`, `nrow(X)`, `ncol(X)` obtain matrix dimensions
+* `t(X)` transpose of `X`
+* `c(X)` convert a matrix (or a vector with dimension) into a dimensionless vector; for a matrix, this is equivalent to stacking the columns.
+* `solve(X)` inverse of `X`: not `X^-1`!
+* `crossprod(X,Y)` is equivalent to `t(X)%*%Y` but much faster; if `Y` is omitted, `t(X)%*%X` is computed.
+* `chol(X)` Cholesky decomposition: if `U <- chol(X)`, then `t(U)%*%U` reconstructs `X`
+* `eigen(X)` Eigendecomposition: if `e <- eigen(X)`, then `e$vectors%*%diag(e$values,length(e$values))%*%t(e$vectors)` reconstructs `X`
+
+# Rowwise and columnwise computation #
+
+* `apply(X, MARGIN, FUN)` for each row (if `MARGIN=1`) or column (if `MARGIN=2`), evaluate function `FUN` and return the resulting vector. (If `FUN` itself returns a vector, `apply()` returns a matrix.)
+* `sweep(X, MARGIN, STATS, FUN)` for each row (if `MARGIN=1`) or column (if `MARGIN=2`) `x`, evaluate `FUN(x, STATS[i])` and replace the original row.
+* `colMeans`, `rowMeans`, `colSums`, `rowSums`: exactly as it sounds.
+* `scale(X)`: centre the matrix so that its column means are 0 and its column mean-squared value is 1; further arguments can be used to do one or the other only.
+
+

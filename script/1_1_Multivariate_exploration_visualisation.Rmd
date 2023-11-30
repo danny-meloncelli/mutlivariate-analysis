@@ -1,0 +1,84 @@
+---
+title: "Multivariate exploration and visualisation"
+author: "Daniel Meloncelli"
+date: "`r Sys.Date()`"
+output: html_notebook
+---
+
+The following code is based on the learning material developed by Drs Pavel Krivitsky and Spiridon Penev as part of the UNSW ZZSC5855 Multivariate Analysis course. The following example demonstrates basic multivariate summary statistics and graphics.
+
+## Load the libraries
+```{r}
+library(magrittr) # pipe operator
+library(purrr)
+```
+
+## Load the data
+
+The "Iris" dataset is built into the `stats` package, so we can acquire it via the `data()` function.
+
+```{r}
+data(iris)
+```
+
+## Basic data summaries
+
+The summary() function can be used to obtain basic 5-number summaries.
+
+```{r}
+summary(iris)
+```
+
+The `apply` function can be used to obtain univariate summaries for each variable.
+
+- Column means
+
+```{r}
+colMeans(iris[,-5]) 
+```
+
+- Column standard deviations
+
+```{r}
+apply(iris[-5], 2, sd) 
+```
+
+- Column 95th percentiles
+
+```{r}
+apply(iris[-5], 2, quantile, 0.95)
+```
+
+- Variance-covariance matrix
+
+```{r}
+cov(iris[,-5])
+```
+
+- Correlation matrix
+
+```{r}
+cor(iris[,-5])
+```
+
+We can also apply to subgroups. For this, we use the "pipe" operator `%>%` from package `magrittr`, which evaluates each function in turn, passing its results as the first argument of the next one (or `.`). We also use `map` function from the `purrr` package.
+
+```{r message=FALSE}
+
+iris %>% # Start with dataset iris
+  split(iris$Species) %>% # Split it according to its species column
+  map(~.[-5]) %>% # For each species, throw away the last column (Species)
+  map(cov)
+```
+
+## Visualisation
+The most common visualisation for multivariate data is a pairwise plot: plot every variable against every other variable. A function that does it well---and automatically takes care of categorical variables---is `GGally`'s `ggpairs` function.
+
+```{r}
+library(GGally)
+ggpairs(iris, aes(colour=Species, alpha = 0.7))
+```
+
+```{r}
+ggpairs(iris)
+```
