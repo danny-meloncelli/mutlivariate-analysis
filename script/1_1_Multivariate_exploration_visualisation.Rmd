@@ -15,7 +15,7 @@ library(purrr)
 
 ## Load the data
 
-The "Iris" dataset is built into the `stats` package, so we can acquire it via the `data()` function.
+The "Iris" dataset is built into the `stats` package, so it can acquired via the `data()` function.
 
 ```{r}
 data(iris)
